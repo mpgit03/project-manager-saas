@@ -260,7 +260,7 @@ export default function ProjectDetailsPage() {
           onDelete={
             handleDeleteTask
           }
-          onEdit={(task) => {
+          onEdit={(task: Task) => {
             setSelectedTask(task);
             setShowEditModal(true);
           }}
@@ -275,7 +275,7 @@ export default function ProjectDetailsPage() {
           onDelete={
             handleDeleteTask
           }
-          onEdit={(task) => {
+          onEdit={(task: Task) => {
             setSelectedTask(task);
             setShowEditModal(true);
           }}
@@ -290,7 +290,7 @@ export default function ProjectDetailsPage() {
           onDelete={
             handleDeleteTask
           }
-          onEdit={(task) => {
+          onEdit={(task: Task) => {
             setSelectedTask(task);
             setShowEditModal(true);
           }}
