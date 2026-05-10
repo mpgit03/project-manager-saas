@@ -40,7 +40,7 @@ export default function DashboardPage() {
 
         const response =
           await axios.get(
-            "http://localhost:5000/api/users/dashboard-stats",
+            `${process.env.NEXT_PUBLIC_API_URL}/users/dashboard-stats`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

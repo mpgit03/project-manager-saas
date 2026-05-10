@@ -41,11 +41,18 @@ export default function TaskCard({
   onDelete,
   onEdit,
 }: Props) {
-  const attachmentUrl =
-    task.attachment
-      ? `http://localhost:5000/${task.attachment}`
-      : null;
+  const BACKEND_URL =
+  process.env
+    .NEXT_PUBLIC_API_URL?.replace(
+      "/api",
+      ""
+    );
 
+const attachmentUrl =
+  task.attachment
+    ? `${BACKEND_URL}/${task.attachment}`
+    : null;
+    
   return (
     <div className="bg-zinc-800 rounded-xl p-4 border border-zinc-700 hover:border-purple-500 transition-all">
       
