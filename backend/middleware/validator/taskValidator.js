@@ -3,12 +3,24 @@ import { body } from "express-validator";
 export const createTaskValidator = [
 
   body("title")
+    .trim()
     .notEmpty()
-    .withMessage("Task title is required"),
+    .withMessage(
+      "Task title is required"
+    ),
+
+  body("description")
+    .optional(),
 
   body("status")
     .optional()
-    .isIn(["pending", "in-progress", "completed"])
-    .withMessage("Invalid task status")
+    .isIn([
+      "todo",
+      "in_progress",
+      "done",
+    ])
+    .withMessage(
+      "Invalid task status"
+    ),
 
 ];

@@ -43,7 +43,10 @@ app.use(morgan("dev"));
 app.use(helmet());
 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: [
+        "http://localhost:3000",
+        process.env.FRONTEND_URL,
+    ],
     credentials: true,
 }));
 

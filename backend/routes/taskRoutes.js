@@ -10,7 +10,15 @@ import { validateRequest } from "../middleware/validateRequest.js";
 const router = express.Router({mergeParams:true});
 //get or create tasks inside a project
 router.get("/",protect,checkProjectOwnership,getProjectTasks);
-router.post("/",protect,checkProjectOwnership,createTaskValidator,validateRequest,upload.single("file"),createTask);
+router.post(
+  "/",
+  protect,
+  checkProjectOwnership,
+  upload.single("file"),
+  createTaskValidator,
+  validateRequest,
+  createTask
+);
 
 //update or delete task by id
 
@@ -61,8 +69,8 @@ router.post("/",protect,checkProjectOwnership,createTaskValidator,validateReques
  *       200:
  *         description: Task deleted
  */
-router.delete("/:id", protect, deleteTask);
-router.put("/:id", protect, updateTask);
+// router.delete("/:id", protect, deleteTask);
+// router.put("/:id", protect, updateTask);
 router.put("/:taskId",protect,checktaskOwnership,updateTask);
 router.delete("/:taskId",protect,checktaskOwnership,deleteTask);
 

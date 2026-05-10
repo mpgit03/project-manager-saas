@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 type Project = {
   _id: string;
   name: string;
@@ -19,8 +21,17 @@ export default function ProjectCard({
   onEdit,
   onDelete,
 }: Props) {
+  const router = useRouter();
+
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-purple-500 transition-all">
+    <div
+      onClick={() =>
+        router.push(
+          `/dashboard/projects/${project._id}`
+        )
+      }
+      className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-purple-500 transition-all cursor-pointer"
+    >
       
       <div className="flex items-start justify-between">
         
@@ -40,6 +51,7 @@ export default function ProjectCard({
       <div className="mt-6">
         <div className="flex items-center justify-between text-sm text-zinc-400 mb-2">
           <span>Progress</span>
+
           <span>70%</span>
         </div>
 
@@ -48,10 +60,17 @@ export default function ProjectCard({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 mt-6">
+      <div
+        className="flex items-center gap-3 mt-6"
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+      >
         
         <button
-          onClick={() => onEdit(project)}
+          onClick={() =>
+            onEdit(project)
+          }
           className="flex-1 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white transition-all"
         >
           Edit

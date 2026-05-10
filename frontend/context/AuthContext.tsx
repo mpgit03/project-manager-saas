@@ -15,13 +15,20 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
+
   token: string | null;
+
+  loading: boolean;
+
   login: (data: any) => void;
+
   logout: () => void;
 };
 
 const AuthContext =
-  createContext<AuthContextType | null>(null);
+  createContext<AuthContextType | null>(
+    null
+  );
 
 export function AuthProvider({
   children,
@@ -34,12 +41,19 @@ export function AuthProvider({
   const [token, setToken] =
     useState<string | null>(null);
 
+  const [loading, setLoading] =
+    useState(true);
+
   useEffect(() => {
     const storedToken =
-      localStorage.getItem("token");
+      localStorage.getItem(
+        "token"
+      );
 
     const storedUser =
-      localStorage.getItem("user");
+      localStorage.getItem(
+        "user"
+      );
 
     if (storedToken) {
       setToken(storedToken);
@@ -50,13 +64,21 @@ export function AuthProvider({
       storedUser !== "undefined"
     ) {
       try {
-        setUser(JSON.parse(storedUser));
+        setUser(
+          JSON.parse(storedUser)
+        );
       } catch (error) {
-        console.log("Invalid user data");
+        console.log(
+          "Invalid user data"
+        );
 
-        localStorage.removeItem("user");
+        localStorage.removeItem(
+          "user"
+        );
       }
     }
+
+    setLoading(false);
   }, []);
 
   const login = (data: any) => {
@@ -71,15 +93,21 @@ export function AuthProvider({
     );
 
     setToken(data.token);
+
     setUser(data.user);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem(
+      "token"
+    );
 
-    localStorage.removeItem("user");
+    localStorage.removeItem(
+      "user"
+    );
 
     setToken(null);
+
     setUser(null);
   };
 
@@ -88,6 +116,7 @@ export function AuthProvider({
       value={{
         user,
         token,
+        loading,
         login,
         logout,
       }}
@@ -98,7 +127,8 @@ export function AuthProvider({
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context =
+    useContext(AuthContext);
 
   if (!context) {
     throw new Error(
