@@ -43,9 +43,9 @@ app.use(morgan("dev"));
 app.use(helmet());
 
 app.use(cors({
-    origin:"*",
-    credentials:true
-}))
+    origin: "http://localhost:3000",
+    credentials: true,
+}));
 
 app.get("/", (req, res) => {
   res.json({

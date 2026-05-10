@@ -8,7 +8,7 @@ import {
 } from "react";
 
 type User = {
-  id?: string;
+  _id?: string;
   name?: string;
   email?: string;
 };
@@ -20,32 +20,50 @@ type AuthContextType = {
   logout: () => void;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext =
+  createContext<AuthContextType | null>(null);
 
 export function AuthProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] =
+    useState<User | null>(null);
 
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] =
+    useState<string | null>(null);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
+    const storedToken =
+      localStorage.getItem("token");
+
+    const storedUser =
+      localStorage.getItem("user");
 
     if (storedToken) {
       setToken(storedToken);
     }
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (
+      storedUser &&
+      storedUser !== "undefined"
+    ) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.log("Invalid user data");
+
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 
   const login = (data: any) => {
-    localStorage.setItem("token", data.token);
+    localStorage.setItem(
+      "token",
+      data.token
+    );
 
     localStorage.setItem(
       "user",
@@ -58,6 +76,7 @@ export function AuthProvider({
 
   const logout = () => {
     localStorage.removeItem("token");
+
     localStorage.removeItem("user");
 
     setToken(null);
@@ -82,7 +101,9 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuth must be used inside AuthProvider");
+    throw new Error(
+      "useAuth must be used inside AuthProvider"
+    );
   }
 
   return context;
