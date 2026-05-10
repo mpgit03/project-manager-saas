@@ -42,13 +42,13 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
 
-app.use(cors({
-    origin: [
-        "http://localhost:3000",
-        process.env.FRONTEND_URL,
-    ],
+app.use(
+  cors({
+    origin:
+      process.env.FRONTEND_URL,
     credentials: true,
-}));
+  })
+);
 
 app.get("/", (req, res) => {
   res.json({
