@@ -120,34 +120,45 @@ export default function ProjectDetailsPage() {
       console.log(error);
     }
   };
-  
-  const handleStatusChange =
-    async (
-      taskId: string,
-      status:
-        | "todo"
-        | "in_progress"
-        | "done"
-    ) => {
-      try {
-        const updatedTask =
-          await updateTask(
-            projectId,
-            taskId,
-            { status }
-          );
 
-        setTasks((prev) =>
-          prev.map((task) =>
-            task._id === taskId
-              ? updatedTask
-              : task
-          )
+  const handleStatusChange =
+  async (
+    taskId: string,
+    status:
+      | "todo"
+      | "in_progress"
+      | "done"
+  ) => {
+
+    try {
+
+      const formData =
+        new FormData();
+
+      formData.append(
+        "status",
+        status
+      );
+
+      const updatedTask =
+        await updateTask(
+          projectId,
+          taskId,
+          formData
         );
-      } catch (error) {
-        console.log(error);
-      }
-    };
+
+      setTasks((prev) =>
+        prev.map((task) =>
+          task._id === taskId
+            ? updatedTask
+            : task
+        )
+      );
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDeleteTask =
     async (taskId: string) => {
