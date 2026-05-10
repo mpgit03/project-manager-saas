@@ -52,22 +52,21 @@ export const updateTask =
   async (
     projectId: string,
     taskId: string,
-    taskData: {
-      title?: string;
-      description?: string;
-      status?:
-        | "todo"
-        | "in_progress"
-        | "done";
-    }
+    formData: FormData
   ) => {
-    const response = await axios.put(
-      `${API}/projects/${projectId}/tasks/${taskId}`,
-      taskData,
-      {
-        headers: authHeaders(),
-      }
-    );
+
+    const response =
+      await axios.put(
+        `${API}/projects/${projectId}/tasks/${taskId}`,
+        formData,
+        {
+          headers: {
+            ...authHeaders(),
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
+      );
 
     return response.data;
   };

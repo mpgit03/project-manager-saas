@@ -93,35 +93,34 @@ export default function ProjectDetailsPage() {
     };
 
   const handleUpdateTask =
-    async (
-      taskId: string,
-      taskData: {
-        title: string;
-        description: string;
-      }
-    ) => {
-      try {
-        const updatedTask =
-          await updateTask(
-            projectId,
-            taskId,
-            taskData
-          );
+  async (
+    taskId: string,
+    formData: FormData
+  ) => {
+    try {
 
-        setTasks((prev) =>
-          prev.map((task) =>
-            task._id === taskId
-              ? updatedTask
-              : task
-          )
+      const updatedTask =
+        await updateTask(
+          projectId,
+          taskId,
+          formData
         );
 
-        setShowEditModal(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      setTasks((prev) =>
+        prev.map((task) =>
+          task._id === taskId
+            ? updatedTask
+            : task
+        )
+      );
 
+      setShowEditModal(false);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   const handleStatusChange =
     async (
       taskId: string,
