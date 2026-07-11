@@ -6,6 +6,7 @@ type Project = {
   _id: string;
   name: string;
   description: string;
+  progress: number;
 };
 
 type Props = {
@@ -52,11 +53,16 @@ export default function ProjectCard({
         <div className="flex items-center justify-between text-sm text-zinc-400 mb-2">
           <span>Progress</span>
 
-          <span>70%</span>
+          <span>{project.progress}%</span>
         </div>
 
         <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
-          <div className="w-[70%] h-full bg-gradient-to-r from-purple-500 to-blue-500" />
+          <div
+          className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-500"
+          style={{
+            width: `${project.progress}%`,
+          }}
+        />
         </div>
       </div>
 

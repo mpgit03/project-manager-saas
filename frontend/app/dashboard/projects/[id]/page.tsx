@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";
@@ -15,6 +16,7 @@ import {
   deleteTask,
   getProjectTasks,
   updateTask,
+  updateTaskStatus,
 } from "@/services/taskService";
 
 type Task = {
@@ -92,73 +94,54 @@ export default function ProjectDetailsPage() {
       }
     };
 
-  const handleUpdateTask =
-  async (
-    taskId: string,
-    formData: FormData
-  ) => {
-    try {
+  const handleUpdateTask = async (
+  taskId: string,
+  formData: FormData
+) => {
+  try {
+    const updatedTask = await updateTask(
+      projectId,
+      taskId,
+      formData
+    );
 
-      const updatedTask =
-        await updateTask(
-          projectId,
-          taskId,
-          formData
-        );
+    setTasks((prev) =>
+      prev.map((task) =>
+        task._id === taskId
+          ? updatedTask
+          : task
+      )
+    );
 
-      setTasks((prev) =>
-        prev.map((task) =>
-          task._id === taskId
-            ? updatedTask
-            : task
-        )
-      );
+    setShowEditModal(false);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-      setShowEditModal(false);
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleStatusChange =
-  async (
-    taskId: string,
-    status:
-      | "todo"
-      | "in_progress"
-      | "done"
-  ) => {
-
-    try {
-
-      const formData =
-        new FormData();
-
-      formData.append(
-        "status",
+ const handleStatusChange = async (
+  taskId: string,
+  status: "todo" | "in_progress" | "done"
+) => {
+  try {
+    const updatedTask =
+      await updateTaskStatus(
+        projectId,
+        taskId,
         status
       );
 
-      const updatedTask =
-        await updateTask(
-          projectId,
-          taskId,
-          formData
-        );
-
-      setTasks((prev) =>
-        prev.map((task) =>
-          task._id === taskId
-            ? updatedTask
-            : task
-        )
-      );
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    setTasks((prev) =>
+      prev.map((task) =>
+        task._id === taskId
+          ? updatedTask
+          : task
+      )
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   const handleDeleteTask =
     async (taskId: string) => {

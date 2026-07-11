@@ -20,6 +20,7 @@ import notFound from "./middleware/notFound.js"
 import {errorhandler} from "./middleware/errorHandler.js" 
 import projectRoutes from "./routes/projectRoutes.js"
 import taskRoutes from "./routes/taskRoutes.js"
+
 import mongoSanitize from "express-mongo-sanitize";
 import rateLimit from "express-rate-limit";
 import { timeStamp } from "node:console";
@@ -44,8 +45,10 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin:
-      process.env.FRONTEND_URL,
+    origin:["http://localhost:3000",
+            process.env.FRONTEND_URL,
+           ],
+      
     credentials: true,
   })
 );
@@ -95,6 +98,8 @@ app.use("/api/auth", authRoutes); // login register
 app.use("/api/users",userRoutes) // user routes
 
 app.use("/api/projects",projectRoutes); //project route and taskroutes 
+
+app.use("/api/tasks", taskRoutes);
 
 app.use("/uploads",express.static("uploads"));
 

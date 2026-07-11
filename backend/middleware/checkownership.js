@@ -39,7 +39,7 @@ export const checkProjectOwnership = asynchandler(
     next();
 })
 
-export const checktaskOwnership = asynchandler(
+export const checkTaskOwnership = asynchandler(
     async(req,res,next)=>{
         const task = await Task.findById(req.params.taskId).populate("project");
         if(!task){

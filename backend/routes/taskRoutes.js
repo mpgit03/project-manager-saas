@@ -1,77 +1,57 @@
 import express from "express";
-import {protect} from "../middleware/authMiddleware.js";
-import { createTask, deleteTask, getProjectTasks, updateTask } from "../controllers/taskController.js";
-import { checkOwnership, checkProjectOwnership,checktaskOwnership } from "../middleware/checkownership.js";
-import { createTaskValidator } from "../middleware/validator/taskValidator.js";
-import upload from "../middleware/uploadmiddleware.js"
-import { validateRequest } from "../middleware/validateRequest.js";
+import { protect } from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadmiddleware.js";
 
+import {
+  getUserTasks,
+ 
+  updateTask,
+  deleteTask,
+  getProjectTasks,
+} from "../controllers/taskController.js";
 
-const router = express.Router({mergeParams:true});
-//get or create tasks inside a project
-router.get("/",protect,checkProjectOwnership,getProjectTasks);
-router.post(
+import { checkTaskOwnership } from "../middleware/checkownership.js";
+
+const router = express.Router();
+
+/*
+|--------------------------------------------------------------------------
+| Tasks
+| Base Route:
+| /api/tasks
+|--------------------------------------------------------------------------
+*/
+
+// Get all tasks for the authenticated user
+router.get(
   "/",
   protect,
-  checkProjectOwnership,
-  upload.single("file"),
-  createTaskValidator,
-  validateRequest,
-  createTask
+  getUserTasks
 );
 
-//update or delete task by id
+// Get a single task
+router.get(
+  "/:taskId",
+  protect,
+  checkTaskOwnership,
+  getProjectTasks
+);
 
-/**
- * @swagger
- * /api/tasks/{id}:
- *   put:
- *     summary: Update task
- *     tags: [Tasks]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               status:
- *                 type: string
- *     responses:
- *       200:
- *         description: Task updated
- */
-/**
- * @swagger
- * /api/tasks/{id}:
- *   delete:
- *     summary: Delete a task
- *     tags: [Tasks]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Task deleted
- */
-// router.delete("/:id", protect, deleteTask);
-// router.put("/:id", protect, updateTask);
-router.put("/:taskId",protect,checktaskOwnership,updateTask);
-router.delete("/:taskId",protect,checktaskOwnership,deleteTask);
+// Update a task
+router.put(
+  "/:taskId",
+  protect,
+  checkTaskOwnership,
+  upload.single("file"),
+  updateTask
+);
+
+// Delete a task
+router.delete(
+  "/:taskId",
+  protect,
+  checkTaskOwnership,
+  deleteTask
+);
 
 export default router;

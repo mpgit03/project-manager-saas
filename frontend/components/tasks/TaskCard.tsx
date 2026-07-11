@@ -109,13 +109,11 @@ const attachmentUrl =
       <div className="flex items-center justify-end gap-3 mt-5">
         
         <button
-          onClick={() =>
-            onEdit(task)
-          }
-          className="px-4 py-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 text-sm transition-all"
-        >
-          Edit
-        </button>
+        onClick={() => onEdit(task)}
+        className="px-4 py-2 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition"
+      >
+        Edit
+      </button>
 
         <button
           onClick={() =>

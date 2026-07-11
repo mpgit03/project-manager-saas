@@ -1,13 +1,19 @@
-import express from "express"
-import {checkOwnership}from "../middleware/checkownership.js"
-import { getProject,deleteProject,updateProject, createProject,getProjects } from "../controllers/projectController.js"
-import { protect } from "../middleware/authMiddleware.js"
-import taskRoutes from "../routes/taskRoutes.js"
+import express from "express";
+import { checkOwnership } from "../middleware/checkownership.js";
+import {
+  getProject,
+  deleteProject,
+  updateProject,
+  createProject,
+  getProjects,
+} from "../controllers/projectController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import taskRoutes from "./ProjectTaskRoutes.js";
 import Project from "../models/Project.js";
-import { createProjectValidator } from "../middleware/validator/projectValidator.js"
-import { validateRequest } from "../middleware/validateRequest.js"
- 
-const router =express.Router();
+import { createProjectValidator } from "../middleware/validator/projectValidator.js";
+import { validateRequest } from "../middleware/validateRequest.js";
+
+const router = express.Router();
 
 /**
  * @swagger
@@ -32,9 +38,6 @@ const router =express.Router();
  *       201:
  *         description: Project created successfully
  */
-
-
-router.post("/", protect, createProject);
 
 /**
  * @swagger
@@ -61,13 +64,17 @@ router.post("/", protect, createProject);
  *       200:
  *         description: List of projects
  */
-router.get("/", protect, getProjects);
-router.route("/")
-   .get(protect,getProjects)
-   .post(protect ,createProjectValidator,validateRequest,createProject)
+router
+  .route("/")
+  .get(protect, getProjects)
+  .post(
+    protect,
+    createProjectValidator,
+    validateRequest,
+    createProject
+  );
 
-
-   /**
+/**
  * @swagger
  * /api/projects/{id}:
  *   get:
@@ -85,12 +92,12 @@ router.route("/")
  *       200:
  *         description: Project found
  */
-router.get("/:id", protect, getProjects);
-router.route("/:id") 
-    .delete(protect,checkOwnership(Project),deleteProject)
-    .get(protect,checkOwnership(Project),getProject)  
-    .put(protect,checkOwnership(Project),updateProject)
+router
+  .route("/:id")
+  .get(protect, checkOwnership(Project), getProject)
+  .put(protect, checkOwnership(Project), updateProject)
+  .delete(protect, checkOwnership(Project), deleteProject);
 
-router .use("/:projectId/tasks",taskRoutes)    
-    
+router.use("/:projectId/tasks", taskRoutes);
+
 export default router;

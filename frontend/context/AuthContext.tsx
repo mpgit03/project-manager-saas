@@ -60,8 +60,7 @@ export function AuthProvider({
     }
 
     if (
-      storedUser &&
-      storedUser !== "undefined"
+      storedUser 
     ) {
       try {
         setUser(
@@ -81,20 +80,18 @@ export function AuthProvider({
     setLoading(false);
   }, []);
 
-  const login = (data: any) => {
-    localStorage.setItem(
-      "token",
-      data.token
-    );
+    const login = (data: any) => {
+    const user = {
+      _id: data.id,
+      name: data.name,
+      email: data.email,
+    };
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(data.user)
-    );
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(user));
 
     setToken(data.token);
-
-    setUser(data.user);
+    setUser(user);
   };
 
   const logout = () => {
