@@ -1,7 +1,11 @@
 import Project from "../models/Project.js";
 import { asynchandler } from "../middleware/asynchandler.js";
 import Task from "../models/Task.js";
-
+import { logActivity } from "../services/activityService.js";
+import {
+  ACTIVITY_EVENTS,
+  ENTITY_TYPES,
+} from "../constants/activity.js";
 
 export const createProject = asynchandler(
     async (req,res)=>{
@@ -12,6 +16,15 @@ export const createProject = asynchandler(
         description,
         owner:req.user._id
     });
+
+    await logActivity({
+        user: req.user.id,
+        action: ACTIVITY_EVENTS.PROJECT_CREATED,
+        entityType: ENTITY_TYPES.PROJECT,
+        entityId: project._id,
+        entityName: project.name,
+        });
+
     res.status(201).json(project);
 
 }

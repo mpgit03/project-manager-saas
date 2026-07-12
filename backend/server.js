@@ -20,6 +20,8 @@ import notFound from "./middleware/notFound.js"
 import {errorhandler} from "./middleware/errorHandler.js" 
 import projectRoutes from "./routes/projectRoutes.js"
 import taskRoutes from "./routes/taskRoutes.js"
+import analyticsRoutes from "./routes/analyticsRoutes.js";
+
 
 import mongoSanitize from "express-mongo-sanitize";
 import rateLimit from "express-rate-limit";
@@ -100,6 +102,9 @@ app.use("/api/users",userRoutes) // user routes
 app.use("/api/projects",projectRoutes); //project route and taskroutes 
 
 app.use("/api/tasks", taskRoutes);
+
+app.use("/api/analytics", analyticsRoutes);
+
 
 app.use("/uploads",express.static("uploads"));
 

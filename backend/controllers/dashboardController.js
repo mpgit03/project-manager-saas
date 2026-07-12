@@ -1,57 +1,78 @@
+import { asynchandler } from "../middleware/asynchandler.js";
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
+import Activity from "../models/Activity.js";
 
-import { asynchandler }
-from "../middleware/asynchandler.js";
+export const getDashboardStats = asynchandler(async (req, res) => {
+  const userId = req.user._id;
 
-export const getDashboardStats =
-  asynchandler(
-    async (req, res) => {
+  const [
+    totalProjects,
+    totalTasks,
+    completedTasks,
+    recentProjects,
+    recentTasks,
+    recentActivity,
+  ] = await Promise.all([
+    Project.countDocuments({
+      owner: userId,
+    }),
 
-      const userId =
-        req.user._id;
+    Task.countDocuments({
+      createdBy: userId,
+    }),
 
-      const totalProjects =
-        await Project.countDocuments({
-          owner: userId,
-        });
+    Task.countDocuments({
+      createdBy: userId,
+      status: "done",
+    }),
 
-      const completedTasks =
-        await Task.countDocuments({
-          createdBy: userId,
-          status: "done",
-        });
+    Project.find({
+      owner: userId,
+    })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("_id name description createdAt")
+      .lean(),
 
-      const pendingTasks =
-        await Task.countDocuments({
-          createdBy: userId,
-          status: {
-            $in: [
-              "todo",
-              "in_progress",
-            ],
-          },
-        });
+    Task.find({
+      createdBy: userId,
+    })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate("project", "name")
+      .select("_id title status project createdAt")
+      .lean(),
 
-      const totalTasks =
-        await Task.countDocuments({
-          createdBy: userId,
-        });
+    Activity.find({
+      user: userId,
+    })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .select("_id event entityName createdAt")
+      .lean(),
+  ]);
 
-      const productivity =
-        totalTasks === 0
-          ? 0
-          : Math.round(
-              (completedTasks /
-                totalTasks) *
-                100
-            );
+  const pendingTasks = totalTasks - completedTasks;
 
-      res.json({
+  const productivity =
+    totalTasks === 0
+      ? 0
+      : Math.round((completedTasks / totalTasks) * 100);
+
+  res.status(200).json({
+    success: true,
+    dashboard: {
+      overview: {
         totalProjects,
+        totalTasks,
         completedTasks,
         pendingTasks,
         productivity,
-      });
-    }
-  );
+      },
+      recentProjects,
+      recentTasks,
+      recentActivity,
+    },
+  });
+});
