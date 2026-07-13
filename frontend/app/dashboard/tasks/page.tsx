@@ -95,7 +95,7 @@ export default function TasksPage() {
       await deleteGlobalTask(id);
       fetchTasks();
     } catch (error) {
-      toast.error()
+      toast.error("Failed to delete task")
     }
   };
 
