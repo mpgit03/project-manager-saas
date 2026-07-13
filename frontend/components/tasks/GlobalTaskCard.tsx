@@ -4,7 +4,7 @@ import Link from "next/link";
 import type {
   TaskWithProject,
   TaskStatus,
-} from "@/types/Task";
+} from "@/types/task";
 
 type Props = {
   task: TaskWithProject;

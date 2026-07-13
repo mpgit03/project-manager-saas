@@ -28,7 +28,7 @@ import {
 import type {
   Task,
   TaskStatus,
-} from "@/types/Task";
+} from "@/types/task"
 
 type TaskColumnProps = {
   title: string;

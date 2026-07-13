@@ -5,7 +5,7 @@ import type {
   Task,
   TaskStatus,
   TaskWithProject
-} from "@/types/Task";
+} from "@/types/task";
 
 type Props = {
   tasks: TaskWithProject[];
