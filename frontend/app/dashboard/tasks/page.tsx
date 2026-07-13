@@ -1,5 +1,5 @@
 "use client";
-
+import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import GlobalTaskList from "@/components/tasks/GlobalTaskList";
@@ -77,9 +77,15 @@ export default function TasksPage() {
         hasNextPage: data.hasNextPage,
         hasPrevPage: data.hasPrevPage,
       }));
-    } catch (error) {
-      toast.error("Failed to fetch tasks");
-    } finally {
+    }catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ?? "Failed to delete task"
+        );
+      } else {
+        toast.error("Something went wrong");
+      }
+  }finally {
       setLoading(false);
     }
   };
