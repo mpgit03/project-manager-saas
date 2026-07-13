@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import toast from "react-hot-toast";
 import GlobalTaskList from "@/components/tasks/GlobalTaskList";
 import TaskFilters from "@/components/tasks/TaskFilters";
 import TaskPagination from "@/components/tasks/TaskPagination";
 import EditTaskModal from "@/components/tasks/EditTaskModal";
 import { updateGlobalTask } from "@/services/taskService";
+import LoadingState from "@/components/common/LoadingState";
 
 import {
   getTasks,
@@ -77,7 +78,7 @@ export default function TasksPage() {
         hasPrevPage: data.hasPrevPage,
       }));
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to fetch tasks");
     } finally {
       setLoading(false);
     }
@@ -88,7 +89,7 @@ export default function TasksPage() {
       await deleteGlobalTask(id);
       fetchTasks();
     } catch (error) {
-      console.log(error);
+      toast.error()
     }
   };
 
@@ -107,7 +108,7 @@ export default function TasksPage() {
     setShowEditModal(false);
 
   } catch (error) {
-    console.log(error);
+    toast.error("Failed to update task")
   }
 };
 
@@ -119,17 +120,15 @@ export default function TasksPage() {
       await updateGlobalTaskStatus(taskId, status);
       fetchTasks();
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to update status");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="text-white">
-        Loading Tasks...
-      </div>
-    );
-  }
+ if (loading) {
+  return (
+    <LoadingState message="Loading tasks..." />
+  );
+}
 
   return (
     <div>

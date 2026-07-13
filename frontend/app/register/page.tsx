@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import toast from "react-hot-toast";
+import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerUser } from "@/services/authService";
@@ -36,13 +38,19 @@ export default function RegisterPage() {
       await registerUser(formData);
 
       router.push("/login");
-    } catch (error: any) {
-      console.log(error.response?.data || error.message);
-      alert("Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ??
+            "Registration failed"
+        );
+      } else {
+        toast.error("Something went wrong");
+      }
+  }finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 relative overflow-hidden">

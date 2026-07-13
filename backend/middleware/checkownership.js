@@ -5,8 +5,7 @@ import Task from "../models/Task.js";
 export const checkProjectOwnership = asynchandler(
     async(req,res,next)=>{
        const project = await Project.findById(req.params.projectId);
-       console.log(req.params);
-        
+       
        if(!project){
        res.status(404)
        throw new Error("Project not found")

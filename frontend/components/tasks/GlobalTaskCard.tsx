@@ -1,32 +1,22 @@
 "use client";
 
 import Link from "next/link";
-
-type Task = {
-  _id: string;
-  title: string;
-  description: string;
-  status: "todo" | "in_progress" | "done";
-  attachment?: string;
-  createdAt: string;
-
-  project: {
-    _id: string;
-    name: string;
-  };
-};
+import type {
+  TaskWithProject,
+  TaskStatus,
+} from "@/types/Task";
 
 type Props = {
-  task: Task;
+  task: TaskWithProject;
 
   onDelete: (id: string) => void;
 
   onStatusChange: (
     id: string,
-    status: "todo" | "in_progress" | "done"
+    status: TaskStatus
   ) => void;
 
-  onEdit: (task: Task) => void;
+  onEdit: (task: TaskWithProject) => void;
 };
 
 export default function GlobalTaskCard({

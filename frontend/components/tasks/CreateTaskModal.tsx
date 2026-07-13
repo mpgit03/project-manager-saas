@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 type Props = {
   onClose: () => void;
 
@@ -27,42 +26,32 @@ export default function CreateTaskModal({
     useState(false);
 
   const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+  e: React.FormEvent
+) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const formData =
-        new FormData();
+    const formData = new FormData();
 
-      formData.append(
-        "title",
-        title
-      );
+    formData.append("title", title);
+    formData.append(
+      "description",
+      description
+    );
 
-      formData.append(
-        "description",
-        description
-      );
-
-      if (file) {
-        formData.append(
-          "file",
-          file
-        );
-      }
-
-      await onCreate(formData);
-
-      onClose();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+    if (file) {
+      formData.append("file", file);
     }
-  };
+
+    await onCreate(formData);
+
+    onClose();
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">

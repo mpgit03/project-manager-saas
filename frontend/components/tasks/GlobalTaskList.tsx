@@ -1,19 +1,23 @@
 import GlobalTaskCard from "./GlobalTaskCard";
+import EmptyState from "../common/EmptyState";
+
+import type {
+  Task,
+  TaskStatus,
+  TaskWithProject
+} from "@/types/Task";
 
 type Props = {
-  tasks: any[];
+  tasks: TaskWithProject[];
 
   onDelete: (id: string) => void;
 
   onStatusChange: (
     id: string,
-    status:
-      | "todo"
-      | "in_progress"
-      | "done"
+    status: TaskStatus
   ) => void;
 
-  onEdit: (task: any) => void;
+  onEdit: (task: TaskWithProject) => void;
 };
 
 export default function GlobalTaskList({
@@ -24,21 +28,14 @@ export default function GlobalTaskList({
 }: Props) {
 
   if (tasks.length === 0) {
-    return (
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 text-center">
-
-        <h2 className="text-2xl text-white font-semibold">
-          No Tasks Found
-        </h2>
-
-        <p className="text-zinc-400 mt-3">
-          Try changing the filters or create
-          a new task.
-        </p>
-
-      </div>
-    );
-  }
+  return (
+    <EmptyState
+      title="No Tasks Found"
+      description="Try changing the filters or create a new task."
+      icon="📝"
+    />
+  );
+}
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

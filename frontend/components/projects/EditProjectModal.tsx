@@ -46,25 +46,23 @@ export default function EditProjectModal({
   };
 
   const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+  e: React.FormEvent
+) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      await onUpdate(
-        project._id,
-        formData
-      );
+    await onUpdate(
+      project._id,
+      formData
+    );
 
-      onClose();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    onClose();
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">

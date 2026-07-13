@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/services/authService";
@@ -40,10 +42,16 @@ export default function LoginPage() {
       login(data);
 
       router.push("/dashboard");
-    } catch (error: any) {
-      console.log(error.response?.data || error.message);
-      alert("Invalid credentials");
-    } finally {
+    } catch (error: unknown) {
+  if (axios.isAxiosError(error)) {
+    toast.error(
+      error.response?.data?.message ??
+        "Invalid credentials"
+    );
+  } else {
+    toast.error("Something went wrong");
+  }
+} finally {
       setLoading(false);
     }
   };

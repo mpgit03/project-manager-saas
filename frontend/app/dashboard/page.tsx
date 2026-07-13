@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import LoadingState from "@/components/common/LoadingState";
+import type { Project } from "@/types/project";
 
 type Overview = {
   totalProjects: number;
@@ -11,11 +13,6 @@ type Overview = {
   productivity: number;
 };
 
-type Project = {
-  _id: string;
-  name: string;
-  description: string;
-};
 
 type Task = {
   _id: string;
@@ -71,12 +68,10 @@ export default function DashboardPage() {
   };
 
   if (loading) {
-    return (
-      <p className="text-zinc-400">
-        Loading dashboard...
-      </p>
-    );
-  }
+  return (
+    <LoadingState message="Loading projects..." />
+  );
+}
 
   if (!dashboard) {
     return (

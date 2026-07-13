@@ -1,14 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
-type Project = {
-  _id: string;
-  name: string;
-  description: string;
-  progress?: number;
-};
-
+import { Project } from "@/types/project";
 type Props = {
   project: Project;
 

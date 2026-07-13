@@ -1,262 +1,265 @@
-# Project Management API
+🚀 Project Manager
 
-A secure **RESTful backend API** for managing projects and tasks.
-Built with **Node.js, Express, and MongoDB**, this API demonstrates authentication, authorization, file uploads, validation, and production-level backend practices.
-
----
-
-## Features
-
-* **JWT Authentication** – Secure user registration and login
-* **Role-Based Access Control (RBAC)** – Control access to protected routes
-* **Project Management** – Create, update, delete, and view projects
-* **Task Management** – Manage tasks within projects
-* **Ownership Authorization** – Users can only modify resources they own
-* **Pagination, Filtering & Search** – Efficient querying of projects and tasks
-* **File Uploads** – Attach files to tasks using Multer
-* **Input Validation** – Request validation with `express-validator`
-* **Security Middleware**
-
-  * Helmet (HTTP security headers)
-  * Rate limiting
-  * CORS protection
-* **Swagger API Documentation**
-* **Structured Error Handling**
-
----
-
-## Tech Stack
-
-**Backend**
-
-* Node.js
-* Express.js
-
-**Database**
-
-* MongoDB
-* Mongoose ODM
-
-**Authentication & Security**
-
-* JSON Web Tokens (JWT)
-* bcrypt
-* express-rate-limit
-* helmet
+A modern full-stack project management platform built with Next.js, Node.js, Express, and MongoDB, featuring JWT authentication, project & task management, analytics, activity tracking, and a responsive dashboard.
 
 
-**Utilities**
 
-* multer (file uploads)
-* express-validator
-* morgan (logging)
-* swagger-jsdoc
-* swagger-ui-express
 
----
 
-## API Documentation
 
-Interactive Swagger documentation is available at:
 
-```
-/api-docs
-```
 
-Example:
 
-```
-http://localhost:5000/api-docs
-```
 
----
 
-## Project Structure
 
-```
-backend/
+📖 Overview
+
+Project Manager is a full-stack productivity application designed to help users organize projects, manage tasks, monitor progress, and visualize productivity through interactive dashboards and analytics.
+
+The application emphasizes clean architecture, reusable components, RESTful API design, and production-style engineering practices.
+
+✨ Features
+Authentication
+JWT Authentication
+Secure password hashing with bcrypt
+Protected API routes
+User profile management
+Project Management
+Create projects
+Edit projects
+Delete projects
+Project progress tracking
+Responsive project dashboard
+Task Management
+Create tasks
+Edit tasks
+Delete tasks
+Status workflow
+Todo
+↓
+In Progress
+↓
+Done
+File attachments
+Global task management
+Project-specific task boards
+Dashboard
+
+Displays:
+
+Total Projects
+Total Tasks
+Completed Tasks
+Pending Tasks
+Productivity %
+Recent Projects
+Recent Tasks
+Recent Activity
+Analytics
+
+Interactive charts showing:
+
+Task status distribution
+Project completion progress
+Overall productivity insights
+Activity Logging
+
+Tracks user actions including:
+
+Project creation
+Project updates
+Project deletion
+Task creation
+Task updates
+Task deletion
+Status changes
+User Experience
+Responsive design
+Loading states
+Empty states
+Confirmation dialogs
+Toast notifications
+File uploads
+Modern UI with Tailwind CSS
+🛠 Tech Stack
+Frontend
+Next.js
+React
+TypeScript
+Tailwind CSS
+Axios
+Recharts
+React Hot Toast
+Backend
+Node.js
+Express.js
+MongoDB
+Mongoose
+JWT
+bcrypt
+Multer
+Swagger
+📂 Project Structure
+Project Manager
 │
-├── config/
-│     db.js
-│     swagger.js
+├── frontend
+│   ├── app
+│   ├── components
+│   ├── context
+│   ├── services
+│   ├── types
+│   └── public
 │
-├── controllers/
-│     authController.js
-│     projectController.js
-│     taskController.js
+├── backend
+│   ├── controllers
+│   ├── middleware
+│   ├── models
+│   ├── routes
+│   ├── uploads
+│   ├── utils
+│   ├── swagger
+│   └── server.js
 │
-├── middleware/
-│     authMiddleware.js
-│     checkOwnership.js
-│     errorHandler.js
-│     notFound.js
-│     validateRequest.js
-│
-├── models/
-│     User.js
-│     Project.js
-│     Task.js
-│
-├── routes/
-│     authRoutes.js
-│     projectRoutes.js
-│     taskRoutes.js
-│
-├── uploads/
-│
-├── utils/
-│     asyncHandler.js
-│
-├── server.js
-└── package.json
-```
+└── README.md
+🏗 Architecture
+Next.js Frontend
+        │
+        │ REST API
+        ▼
+Express Backend
+        │
+        ▼
+Authentication Middleware
+        │
+        ▼
+Controllers
+        │
+        ▼
+MongoDB (Mongoose)
+🔐 Authentication Flow
+Register
+      │
+      ▼
+Password Hashing (bcrypt)
+      │
+      ▼
+Login
+      │
+      ▼
+JWT Generation
+      │
+      ▼
+Client Stores Token
+      │
+      ▼
+Protected Requests
+      │
+      ▼
+JWT Verification Middleware
+📊 Dashboard Metrics
 
----
+The dashboard provides real-time statistics including:
 
-## Installation
+Total Projects
+Total Tasks
+Completed Tasks
+Pending Tasks
+Productivity Percentage
+Recent Activity Feed
+📈 Analytics
 
-Clone the repository:
+Visualizes:
 
-```
-git clone https://github.com/YOUR_USERNAME/project-management-api.git
-cd project-management-api
-```
-
-Install dependencies:
-
-```
-npm install
-```
-
----
-
-## Environment Variables
-
-Create a `.env` file in the root directory.
-
-Example:
-
-```
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-```
-
----
-
-## Running the Server
-
-Development mode:
-
-```
-npm run dev
-```
-
-Production mode:
-
-```
-npm start
-```
-
-Server runs on:
-
-```
-http://localhost:5000
-```
-
----
-
-## Frontend (React)
-
-A React frontend is integrated in the `frontend` folder and connected to this backend API.
-
-### Frontend Setup
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs on:
-
-```
-http://localhost:5173
-```
-
-Set API URL in `frontend/.env`:
-
-```
-VITE_API_BASE_URL=http://localhost:5000
-```
-
-### Integrated Production Hosting
-
-Build frontend and run backend:
-
-```bash
-cd frontend
-npm install
-npm run build
-cd ..
-npm install
-npm start
-```
-
-When `frontend/dist` exists, `server.js` serves the React app and keeps API routes under `/api/*`.
-
----
-
-## Example API Endpoints
-
-### Authentication
-
-```
+Task completion distribution
+Project progress
+Productivity trends
+📡 REST API
+Authentication
 POST /api/auth/register
 POST /api/auth/login
-```
+Users
+GET  /api/users/getme
+PUT  /api/users/profile
+GET  /api/users/dashboard-stats
+GET  /api/users/analytics
+Projects
+GET
+POST
+PUT
+DELETE
+Tasks
+GET
+POST
+PUT
+DELETE
+PATCH Status
+Upload Attachment
+⚙️ Installation
 
-### Projects
+Clone the repository
 
-```
-GET    /api/projects
-POST   /api/projects
-PUT    /api/projects/:id
-DELETE /api/projects/:id
-```
+git clone <repo-url>
 
-### Tasks
+Backend
 
-```
-GET    /api/projects/:projectId/tasks
-POST   /api/projects/:projectId/tasks
-PUT    /api/tasks/:id
-DELETE /api/tasks/:id
-```
+cd backend
+npm install
+npm run dev
 
----
+Frontend
 
-## Security Practices Implemented
+cd frontend
+npm install
+npm run dev
+🔑 Environment Variables
 
-* Password hashing with bcrypt
-* JWT authentication
-* Request validation
-* MongoDB query sanitization
-* API rate limiting
-* Secure HTTP headers
+Backend
 
----
+PORT=
+MONGO_URI=
+JWT_SECRET=
 
-## Future Improvements
+Frontend
 
-* Redis caching
-* Background jobs (queues)
-* Automated testing (Jest / Supertest)
-* Docker containerization
-* CI/CD pipeline
+NEXT_PUBLIC_API_URL=
+🚀 Deployment
 
----
+Frontend
 
-## Author
+Vercel
 
-Built as a backend engineering project demonstrating modern **Node.js API development practices**.
+Backend
+
+Render
+
+Database
+
+MongoDB Atlas
+📚 What I Learned
+
+Through this project I strengthened my understanding of:
+
+Designing RESTful APIs
+JWT authentication & authorization
+MongoDB data modeling
+Express middleware architecture
+React state management
+Next.js App Router
+TypeScript
+File uploads with Multer
+Dashboard & analytics design
+Component reusability
+Error handling
+Building production-style full-stack applications
+🔮 Future Improvements
+Kanban drag-and-drop
+Team collaboration
+Role-based access control
+Email notifications
+Due dates & reminders
+Search & advanced filtering
+Real-time updates using WebSockets
+Docker & Docker Compose
+CI/CD pipeline
+Unit & integration testing

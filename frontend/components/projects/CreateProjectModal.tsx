@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+
 type Props = {
   onClose: () => void;
   onCreate: (data: {
@@ -31,22 +32,20 @@ export default function CreateProjectModal({
   };
 
   const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+  e: React.FormEvent
+) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      await onCreate(formData);
+    await onCreate(formData);
 
-      onClose();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    onClose();
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">

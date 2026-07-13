@@ -5,18 +5,17 @@ import AnalyticsInsights from "@/components/analytics/AnalyticsInsights";
 import ProjectProgress from "@/components/analytics/ProjectProgress";
 import TaskStatusChart from "@/components/analytics/TaskStatusChart";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import LoadingState from "@/components/common/LoadingState";
 
 export default function AnalyticsPage() {
   const { analytics, loading } =
     useAnalytics();
 
   if (loading) {
-    return (
-      <div className="text-zinc-400">
-        Loading analytics...
-      </div>
-    );
-  }
+  return (
+    <LoadingState message="Loading analytics..." />
+  );
+}
 
   if (!analytics) {
     return (

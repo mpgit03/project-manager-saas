@@ -9,6 +9,8 @@ from "next/navigation";
 import { useEffect }
 from "react";
 
+import LoadingState from "../common/LoadingState";
+
 export default function ProtectedRoute({
   children,
 }: {
@@ -38,12 +40,10 @@ export default function ProtectedRoute({
   ]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center text-white">
-        Loading...
-      </div>
-    );
-  }
+  return (
+    <LoadingState message="Loading ..." />
+  );
+}
 
   if (!token) {
     return null;

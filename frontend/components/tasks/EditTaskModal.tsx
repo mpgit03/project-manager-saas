@@ -40,47 +40,36 @@ export default function EditTaskModal({
   const [loading, setLoading] =
     useState(false);
 
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+ const handleSubmit = async (
+  e: React.FormEvent
+) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const formData =
-        new FormData();
+    const formData = new FormData();
 
-      formData.append(
-        "title",
-        title
-      );
+    formData.append("title", title);
+    formData.append(
+      "description",
+      description
+    );
 
-      formData.append(
-        "description",
-        description
-      );
-
-      if (file) {
-        formData.append(
-          "file",
-          file
-        );
-      }
-
-      await onUpdate(
-        task._id,
-        formData
-      );
-
-      onClose();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+    if (file) {
+      formData.append("file", file);
     }
-  };
 
+    await onUpdate(
+      task._id,
+      formData
+    );
+
+    onClose();
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
       

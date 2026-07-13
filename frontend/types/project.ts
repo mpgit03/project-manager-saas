@@ -1,0 +1,6 @@
+export type Project = {
+  _id: string;
+  name: string;
+  description: string;
+  progress?: number;
+};

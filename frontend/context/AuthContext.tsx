@@ -13,6 +13,13 @@ type User = {
   email?: string;
 };
 
+type LoginResponse = {
+  id: string;
+  name: string;
+  email: string;
+  token: string;
+};
+
 type AuthContextType = {
   user: User | null;
 
@@ -20,7 +27,7 @@ type AuthContextType = {
 
   loading: boolean;
 
-  login: (data: any) => void;
+  login: (data: LoginResponse) => void;
 
   logout: () => void;
 };
@@ -80,7 +87,7 @@ export function AuthProvider({
     setLoading(false);
   }, []);
 
-    const login = (data: any) => {
+    const login = (data: LoginResponse) => {
     const user = {
       _id: data.id,
       name: data.name,

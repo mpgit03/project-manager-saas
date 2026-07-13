@@ -1,12 +1,19 @@
 "use client";
+import axios from "axios";
 
 import { useEffect, useState } from "react";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
+import toast from "react-hot-toast";  
 
 import ProjectCard from "@/components/projects/ProjectCard";
 
 import CreateProjectModal from "@/components/projects/CreateProjectModal";
 
 import EditProjectModal from "@/components/projects/EditProjectModal";
+
+import LoadingState from "@/components/common/LoadingState";
+
+import EmptyState from "@/components/common/EmptyState";
 
 import {
   createProject,
@@ -15,12 +22,7 @@ import {
   updateProject,
 } from "@/services/projectService";
 
-type Project = {
-  _id: string;
-  name: string;
-  description: string;
-  progress?: number;
-};
+import { Project } from "@/types/project";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -37,6 +39,15 @@ export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] =
     useState<Project | null>(null);
 
+  const [showDeleteModal, setShowDeleteModal] =
+  useState(false);
+
+  const [projectToDelete, setProjectToDelete] =
+    useState<Project | null>(null);
+
+  const [deleting, setDeleting] =
+    useState(false);
+
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -47,30 +58,42 @@ export default function ProjectsPage() {
 
       setProjects(data.projects || []);
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to load projects");
     } finally {
       setLoading(false);
     }
   };
 
   const handleCreateProject = async (
-    projectData: {
-      name: string;
-      description: string;
-    }
-  ) => {
-    try {
-      const newProject =
-        await createProject(projectData);
+      projectData: {
+        name: string;
+        description: string;
+      }
+    ) => {
+      try {
+        const newProject =
+          await createProject(projectData);
 
-      setProjects((prev) => [
-        newProject,
-        ...prev,
-      ]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        setProjects((prev) => [
+          newProject,
+          ...prev,
+        ]);
+
+        toast.success(
+          "Project created successfully"
+        );
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          toast.error(
+            error.response?.data?.message ??
+              "Failed to create project"
+          );
+        } else {
+          toast.error("Something went wrong");
+        }
+      }
+    };
+
 
   const handleEditClick = (
     project: Project
@@ -103,35 +126,84 @@ export default function ProjectsPage() {
       );
 
       setShowEditModal(false);
-    } catch (error) {
-      console.log(error);
+
+      toast.success(
+        "Project updated successfully"
+      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ??
+            "Failed to create project"
+        );
+      } else {
+        toast.error("Something went wrong");
+      }
     }
   };
 
-  const handleDeleteProject = async (
-    id: string
-  ) => {
+
+  const handleDeleteProject = (
+  id: string
+) => {
+  const project = projects.find(
+    (p) => p._id === id
+  );
+
+  if (!project) return;
+
+  setProjectToDelete(project);
+
+  setShowDeleteModal(true);
+};
+
+
+
+const confirmDeleteProject =
+  async () => {
+    if (!projectToDelete) return;
+
     try {
-      await deleteProject(id);
+      setDeleting(true);
+
+      await deleteProject(
+        projectToDelete._id
+      );
 
       setProjects((prev) =>
         prev.filter(
           (project) =>
-            project._id !== id
+            project._id !==
+            projectToDelete._id
         )
       );
-    } catch (error) {
-      console.log(error);
+
+      toast.success(
+        "Project deleted successfully"
+      );
+
+      setShowDeleteModal(false);
+
+      setProjectToDelete(null);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+      toast.error(
+        error.response?.data?.message ??
+          "Failed to delete project"
+      );
+  } else {
+    toast.error("Something went wrong");
+  }
+} finally {
+      setDeleting(false);
     }
   };
 
   if (loading) {
-    return (
-      <div className="text-white">
-        Loading projects...
-      </div>
-    );
-  }
+  return (
+    <LoadingState message="Loading projects..." />
+  );
+}
 
   return (
     <div>
@@ -158,16 +230,11 @@ export default function ProjectsPage() {
       </div>
 
       {projects.length === 0 ? (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 text-center">
-          
-          <h2 className="text-2xl text-white font-semibold">
-            No Projects Yet
-          </h2>
-
-          <p className="text-zinc-400 mt-3">
-            Start by creating your first project.
-          </p>
-        </div>
+        <EmptyState
+          title="No Projects Yet"
+          description="Start by creating your first project."
+          icon="📁"
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           
@@ -209,6 +276,20 @@ export default function ProjectsPage() {
             }
           />
         )}
+
+            <ConfirmationModal
+            isOpen={showDeleteModal}
+            title="Delete Project"
+            message="Deleting this project will permanently remove it along with all associated tasks. This action cannot be undone."
+            confirmText="Delete"
+            danger
+            loading={deleting}
+            onCancel={() => {
+              setShowDeleteModal(false);
+              setProjectToDelete(null);
+            }}
+            onConfirm={confirmDeleteProject}
+          />
     </div>
   );
 }

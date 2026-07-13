@@ -1,6 +1,6 @@
 "use client";
 
-
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 import { useParams } from "next/navigation";
@@ -9,7 +9,13 @@ import CreateTaskModal from "@/components/tasks/CreateTaskModal";
 
 import EditTaskModal from "@/components/tasks/EditTaskModal";
 
+import ConfirmationModal from "@/components/common/ConfirmationModal";
+import toast from "react-hot-toast";
+
 import TaskCard from "@/components/tasks/TaskCard";
+
+import LoadingState from "@/components/common/LoadingState";
+import EmptyState from "@/components/common/EmptyState";
 
 import {
   createTask,
@@ -19,19 +25,20 @@ import {
   updateTaskStatus,
 } from "@/services/taskService";
 
-type Task = {
-  _id: string;
+import type {
+  Task,
+  TaskStatus,
+} from "@/types/Task";
 
+type TaskColumnProps = {
   title: string;
-
-  description: string;
-
-  status:
-    | "todo"
-    | "in_progress"
-    | "done";
-
-  attachment?: string;
+  tasks: Task[];
+  onStatusChange: (
+    taskId: string,
+    status: Task["status"]
+  ) => void;
+  onDelete: (taskId: string) => void;
+  onEdit: (task: Task) => void;
 };
 
 export default function ProjectDetailsPage() {
@@ -55,6 +62,15 @@ export default function ProjectDetailsPage() {
   const [selectedTask, setSelectedTask] =
     useState<Task | null>(null);
 
+  const [showDeleteModal, setShowDeleteModal] =
+  useState(false);
+
+  const [taskToDelete, setTaskToDelete] =
+    useState<Task | null>(null);
+
+  const [deleting, setDeleting] =
+    useState(false);
+
   useEffect(() => {
     fetchTasks();
   }, []);
@@ -68,42 +84,52 @@ export default function ProjectDetailsPage() {
 
       setTasks(data || []);
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to load tasks");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCreateTask =
-    async (
-      formData: FormData
-    ) => {
-      try {
-        const newTask =
-          await createTask(
-            projectId,
-            formData
-          );
+  const handleCreateTask = async (
+  formData: FormData
+) => {
+  try {
+    const newTask = await createTask(
+      projectId,
+      formData
+    );
 
-        setTasks((prev) => [
-          newTask,
-          ...prev,
-        ]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    setTasks((prev) => [
+      newTask,
+      ...prev,
+    ]);
+
+    toast.success(
+      "Task created successfully"
+    );
+  } catch (error: unknown) {
+  if (axios.isAxiosError(error)) {
+    toast.error(
+      error.response?.data?.message ??
+        "Failed to create project"
+    );
+  } else {
+    toast.error("Something went wrong");
+  }
+}
+};
 
   const handleUpdateTask = async (
   taskId: string,
   formData: FormData
 ) => {
   try {
-    const updatedTask = await updateTask(
-      projectId,
-      taskId,
-      formData
-    );
+    const updatedTask =
+      await updateTask(
+        projectId,
+        taskId,
+        formData
+      );
 
     setTasks((prev) =>
       prev.map((task) =>
@@ -114,14 +140,25 @@ export default function ProjectDetailsPage() {
     );
 
     setShowEditModal(false);
-  } catch (error) {
-    console.log(error);
-  }
+
+    toast.success(
+      "Task updated successfully"
+    );
+  } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast.error(
+          error.response?.data?.message ??
+            "Failed to update project"
+        );
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
 };
 
  const handleStatusChange = async (
   taskId: string,
-  status: "todo" | "in_progress" | "done"
+  status:TaskStatus,
 ) => {
   try {
     const updatedTask =
@@ -138,29 +175,76 @@ export default function ProjectDetailsPage() {
           : task
       )
     );
-  } catch (error) {
-    console.log(error);
+
+    toast.success(
+      "Task status updated"
+    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      toast.error(
+        error.response?.data?.message ??
+          "Failed to change status"
+      );
+    } else {
+      toast.error("Something went wrong");
+    }
   }
 };
 
-  const handleDeleteTask =
-    async (taskId: string) => {
-      try {
-        await deleteTask(
-          projectId,
-          taskId
-        );
+  const handleDeleteTask = (
+  taskId: string
+) => {
+  const task = tasks.find(
+    (t) => t._id === taskId
+  );
 
-        setTasks((prev) =>
-          prev.filter(
-            (task) =>
-              task._id !== taskId
-          )
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  if (!task) return;
+
+  setTaskToDelete(task);
+
+  setShowDeleteModal(true);
+};
+
+const confirmDeleteTask =
+  async () => {
+    if (!taskToDelete) return;
+
+    try {
+      setDeleting(true);
+
+      await deleteTask(
+        projectId,
+        taskToDelete._id
+      );
+
+      setTasks((prev) =>
+        prev.filter(
+          (task) =>
+            task._id !==
+            taskToDelete._id
+        )
+      );
+
+      toast.success(
+        "Task deleted successfully"
+      );
+
+      setShowDeleteModal(false);
+
+      setTaskToDelete(null);
+    } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      toast.error(
+        error.response?.data?.message ??
+          "Failed to delete task"
+      );
+    } else {
+      toast.error("Something went wrong");
+    }
+  } finally {
+      setDeleting(false);
+    }
+  };
 
   const todoTasks = tasks.filter(
     (task) => task.status === "todo"
@@ -187,12 +271,10 @@ export default function ProjectDetailsPage() {
         );
 
   if (loading) {
-    return (
-      <div className="text-white">
-        Loading...
-      </div>
-    );
-  }
+  return (
+    <LoadingState message="Loading ..." />
+  );
+}
 
   return (
     <div>
@@ -313,6 +395,20 @@ export default function ProjectDetailsPage() {
             }
           />
         )}
+
+        <ConfirmationModal
+        isOpen={showDeleteModal}
+        title="Delete Task"
+        message="This task will be permanently deleted. This action cannot be undone."
+        confirmText="Delete"
+        danger
+        loading={deleting}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setTaskToDelete(null);
+        }}
+        onConfirm={confirmDeleteTask}
+      />
     </div>
   );
 }
@@ -323,7 +419,7 @@ function TaskColumn({
   onStatusChange,
   onDelete,
   onEdit,
-}: any) {
+}: TaskColumnProps) {
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 min-h-[300px]">
       
@@ -341,9 +437,11 @@ function TaskColumn({
       <div className="space-y-4">
         
         {tasks.length === 0 ? (
-          <div className="text-zinc-500 text-sm">
-            No tasks yet
-          </div>
+          <EmptyState
+            title="No Tasks"
+            description="Create a task to get started."
+            icon="📝"
+          />
         ) : (
           tasks.map((task: Task) => (
             <TaskCard
@@ -358,6 +456,8 @@ function TaskColumn({
           ))
         )}
       </div>
+
+      
     </div>
   );
 }

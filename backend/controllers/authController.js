@@ -11,7 +11,7 @@ const registerUser = asynchandler(
         }
 
         const userExists = await User.findOne({email})
-        console.log("User found:", userExists);
+        
         
         if(userExists){
             res.status(400)

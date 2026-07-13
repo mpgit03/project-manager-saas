@@ -1,4 +1,4 @@
-type Project = {
+type ProjectAnalytics = {
   _id: string;
   name: string;
   progress: number;
@@ -7,7 +7,7 @@ type Project = {
 };
 
 type Props = {
-  projects: Project[];
+  projects: ProjectAnalytics[];
 };
 
 export default function ProjectProgress({
