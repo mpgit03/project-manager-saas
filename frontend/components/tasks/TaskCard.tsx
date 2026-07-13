@@ -1,19 +1,6 @@
 "use client";
 
-type Task = {
-  _id: string;
-
-  title: string;
-
-  description: string;
-
-  status:
-    | "todo"
-    | "in_progress"
-    | "done";
-
-  attachment?: string;
-};
+import {Task} from "@/types/task"
 
 type Props = {
   task: Task;
